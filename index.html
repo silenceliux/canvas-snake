@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    html,body{
+        height:100%;
+        width:100%;
+    }
+    #myCanvas{
+        display:block;
+    }
+</style>
+    <canvas id="myCanvas" style="border: 1px solid  #c3c3c3"></canvas>
+    <script>
+        var c=document.getElementById("myCanvas");
+        var width = document.body.clientWidth;
+        var height = document.body.clientHeight;
+        c.width = width;
+        c.height = height;
+        var cxt=c.getContext("2d");
+        var snack = [];
+        cxt.fillStyle="#FF0000";
+        cxt.arc(200,200,15,0,Math.PI*2,true);
+        cxt.fill();
+        function addSnack(){
+
+        }
+        c.addEventListener('touchmove', function (event) {
+            var touch = event.touches[0]; //获取第一个触点
+            var x = touch.clientX;
+            var y = touch.clientY;
+            cxt.clearRect(0,0,width,height);
+            for(var i=0;i<snack.length;i++){
+                cxt.beginPath();
+                cxt.arc(x,y,15,0,Math.PI*2);
+                cxt.closePath();
+                cxt.fill();
+            }
+        }, false);
+
+
+        function init(){
+            addSnack();
+            apple();
+        }
+        function apple(){
+            cxt.fillStyle="#00FF00";
+            var x = Math.floor(Math.random()*500);
+            var y = Math.floor(Math.random()*500);
+            cxt.fillRect(x,y,10,10);
+        }
+       // init();
+    </script>
+</body>
+</html>
