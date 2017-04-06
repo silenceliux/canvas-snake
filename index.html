@@ -61,38 +61,43 @@
         var snack = [{x:500,y:500}];
         cxt1.fillStyle="#FF0000";
         var addOne={};
-        var startX,startY,sportX = 0,sportY = 1;
-        direction.addEventListener('touchstart', function (event) {
-            var touch = event.touches[0]; //获取第一个触点
-            startX = touch.clientX;
-            startY = touch.clientY;
-        }, false);
+        var startX = height/10,startY = height/10,sportX = 0,sportY = 1;
+        var sportTime;
+//        direction.addEventListener('touchstart', function (event) {
+//            var touch = event.touches[0]; //获取第一个触点
+//            startX = touch.clientX;lastMoveX = startX;
+//            startY = touch.clientY;lastMoveY = startY;
+//        }, false);
         direction.addEventListener('touchmove', function (event) {
             var touch = event.touches[0]; //获取第一个触点
             var x = touch.clientX;
             var y = touch.clientY;
-            var moveX,moveY;
+            var left,top;
             if(x-(height/40) < height/20 ){
-                moveX = height/20;
+                left = height/20;
             }
             else if(x-(height/40) > height/10){
-                moveX = height/10;
+                left = height/10;
             }
             else{
-                moveX = x-(height/40);
+                left = x-(height/40);
             }
             if(y-(height/40) < height/20 ){
-                moveY = height/20;
+                top = height/20;
             }
             else if(y-(height/40) > height/10){
-                moveY = height/10;
+                top = height/10;
             }
             else{
-                moveY = y-(height/40);
+                top = y-(height/40);
             }
-            direction.style.left=moveX+"px";
-            direction.style.top=moveY+"px";
+            direction.style.left=left+"px";
+            direction.style.top=top+"px";
+                sportX = Math.abs((x - startX)/(y-startY))>1?Math.abs(x - startX)/(x - startX):(x - startX)/(y-startY);
+                sportY = Math.abs((x - startX)/(y-startY))>1?(y-startY)/(x - startX):Math.abs(y-startY)/(y-startY);
 
+            clearTimeout(sportTime);
+            sport();
         }, false);
         direction.addEventListener('touchend', function (event) {
             direction.style.left="7.5vh";
@@ -102,6 +107,7 @@
         function init(){
             render();
             apple();
+            sport();
         }
         function render(){
             cxt1.clearRect(0,0,width,height);
@@ -129,7 +135,10 @@
             cxt2.fill();
         }
         function sport(){
-//            for(var )
+            snack[0].x += sportX;
+            snack[0].y += sportY;
+            render();
+            sportTime = setTimeout(sport,10);
         }
        init();
     </script>
