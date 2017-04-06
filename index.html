@@ -63,11 +63,6 @@
         var addOne={};
         var startX = height/10,startY = height/10,sportX = 0,sportY = 1;
         var sportTime;
-//        direction.addEventListener('touchstart', function (event) {
-//            var touch = event.touches[0]; //获取第一个触点
-//            startX = touch.clientX;lastMoveX = startX;
-//            startY = touch.clientY;lastMoveY = startY;
-//        }, false);
         direction.addEventListener('touchmove', function (event) {
             var touch = event.touches[0]; //获取第一个触点
             var x = touch.clientX;
@@ -93,8 +88,10 @@
             }
             direction.style.left=left+"px";
             direction.style.top=top+"px";
-                sportX = Math.abs((x - startX)/(y-startY))>1?Math.abs(x - startX)/(x - startX):(x - startX)/(y-startY);
-                sportY = Math.abs((x - startX)/(y-startY))>1?(y-startY)/(x - startX):Math.abs(y-startY)/(y-startY);
+            var moveX = x-startX;
+            var moveY = y - startY;
+                sportX = Math.abs(moveX/moveY)>1?Math.abs(moveX)/moveX:moveX/Math.abs(moveY);
+                sportY = Math.abs(moveX/moveY)>1?moveY/Math.abs(moveX):Math.abs(moveY)/moveY;
 
             clearTimeout(sportTime);
             sport();
@@ -137,6 +134,11 @@
         function sport(){
             snack[0].x += sportX;
             snack[0].y += sportY;
+            if(snack[0].x>width-15 || snack[0].x<15 || snack[0].y>height-15 || snack[0].y<15){
+                console.log("shule");
+                clearTimeout(sportTime);
+                return;
+            }
             render();
             sportTime = setTimeout(sport,10);
         }
