@@ -104,7 +104,8 @@
         function init(){
             render();
             apple();
-            sport();
+            addSnack();
+//            sport();
         }
         function render(){
             cxt1.clearRect(0,0,width,height);
@@ -138,6 +139,12 @@
                 console.log("shule");
                 clearTimeout(sportTime);
                 return;
+            }
+            //写移动的距离
+            var x,y;
+            for(var i=1;i<snack.length;i++){
+                x = snack[i].x - snack[i-1].x;
+                y = snack[i].y - snack[i-1].y;
             }
             render();
             sportTime = setTimeout(sport,10);
