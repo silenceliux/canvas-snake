@@ -63,6 +63,7 @@
         var addOne={};
         var startX = height/10,startY = height/10,sportX = 0,sportY = 1;
         var sportTime;
+        var sportPath = [];
         direction.addEventListener('touchmove', function (event) {
             var touch = event.touches[0]; //获取第一个触点
             var x = touch.clientX;
@@ -90,8 +91,11 @@
             direction.style.top=top+"px";
             var moveX = x-startX;
             var moveY = y - startY;
-                sportX = Math.abs(moveX/moveY)>1?Math.abs(moveX)/moveX:moveX/Math.abs(moveY);
-                sportY = Math.abs(moveX/moveY)>1?moveY/Math.abs(moveX):Math.abs(moveY)/moveY;
+            var moveRatio = moveX/moveY;
+            sportY = Math.sqrt(1/(moveRatio*moveRatio+1))*(Math.abs(moveY)/moveY);
+            sportX = sportY*Math.abs(moveRatio)*(Math.abs(moveX)/moveX);
+//                sportX = Math.abs(moveX/moveY)>1?Math.abs(moveX)/moveX:moveX/Math.abs(moveY);
+//                sportY = Math.abs(moveX/moveY)>1?moveY/Math.abs(moveX):Math.abs(moveY)/moveY;
 
             clearTimeout(sportTime);
             sport();
@@ -102,10 +106,18 @@
         }, false);
 
         function init(){
+            initPath();
             render();
             apple();
             addSnack();
 //            sport();
+        }
+        function initPath(){
+            for(var i=0;i<30;i++){
+                sportPath[i] = {};
+                sportPath[i].x = 500;
+                sportPath[i].y = 500+i;
+            }
         }
         function render(){
             cxt1.clearRect(0,0,width,height);
@@ -133,6 +145,18 @@
             cxt2.fill();
         }
         function sport(){
+            var obj={};
+        //写移动的距离
+            var x, y,moveX,moveY;
+//            for(var i=snack.length-1;i>0;i--){
+//                x = snack[i-1].x - snack[i].x;
+//                y = snack[i-1].y - snack[i].y;
+//                moveX = Math.abs(x/y)>1?Math.abs(x)/x:x/Math.abs(y);
+//                moveY = Math.abs(x/y)>1?y/Math.abs(x):Math.abs(y)/y;
+//                snack[i].x += moveX;
+//                snack[i].y += moveY;
+//            }
+
             snack[0].x += sportX;
             snack[0].y += sportY;
             if(snack[0].x>width-15 || snack[0].x<15 || snack[0].y>height-15 || snack[0].y<15){
@@ -140,12 +164,17 @@
                 clearTimeout(sportTime);
                 return;
             }
-            //写移动的距离
-            var x,y;
+            obj.x = snack[0].x;
+            obj.y = snack[0].y;
+            sportPath.unshift(obj);
             for(var i=1;i<snack.length;i++){
-                x = snack[i].x - snack[i-1].x;
-                y = snack[i].y - snack[i-1].y;
+                snack[i].x = sportPath[i*30].x;
+                snack[i].y = sportPath[i*30].y;
             }
+            if(sportPath.length > snack.length*30+3){
+                sportPath.splice(snack.length*30+3,(sportPath.length - snack.length*30+3));
+            }
+
             render();
             sportTime = setTimeout(sport,10);
         }
