@@ -64,6 +64,7 @@
         var startX = height/10,startY = height/10,sportX = 0,sportY = 1;
         var sportTime;
         var sportPath = [];
+        var apples = [];
         direction.addEventListener('touchmove', function (event) {
             var touch = event.touches[0]; //获取第一个触点
             var x = touch.clientX;
@@ -134,15 +135,17 @@
             obj.y = snack[snack.length-1].y+30;
             snack.push(obj);
             render();
-            setTimeout(addSnack,5000);
         }
         function apple(){
             cxt2.fillStyle="#00FF00";
-            var x,y;
-
+            var x, y,obj;
             for(var i=0;i<100;i++){
                 x = Math.floor(Math.random()*width);
                 y = Math.floor(Math.random()*height);
+                obj = {};
+                obj.x = x;
+                obj.y = y;
+                apples.push(obj);
                 cxt2.beginPath();
                 cxt2.arc(x,y,10,0,Math.PI*2);
                 cxt2.closePath();
