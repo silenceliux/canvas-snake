@@ -93,7 +93,7 @@
             var moveY = y - startY;
             var moveRatio = moveX/moveY;
             sportY = Math.sqrt(1/(moveRatio*moveRatio+1))*(Math.abs(moveY)/moveY);
-            sportX = sportY*Math.abs(moveRatio)*(Math.abs(moveX)/moveX);
+            sportX = Math.abs(sportY*moveRatio)*(Math.abs(moveX)/moveX);
 //                sportX = Math.abs(moveX/moveY)>1?Math.abs(moveX)/moveX:moveX/Math.abs(moveY);
 //                sportY = Math.abs(moveX/moveY)>1?moveY/Math.abs(moveX):Math.abs(moveY)/moveY;
 
@@ -134,29 +134,24 @@
             obj.y = snack[snack.length-1].y+30;
             snack.push(obj);
             render();
+            setTimeout(addSnack,5000);
         }
         function apple(){
             cxt2.fillStyle="#00FF00";
-            var x = Math.floor(Math.random()*500);
-            var y = Math.floor(Math.random()*500);
-            cxt2.beginPath();
-            cxt2.arc(x,y,10,0,Math.PI*2);
-            cxt2.closePath();
-            cxt2.fill();
+            var x,y;
+
+            for(var i=0;i<100;i++){
+                x = Math.floor(Math.random()*width);
+                y = Math.floor(Math.random()*height);
+                cxt2.beginPath();
+                cxt2.arc(x,y,10,0,Math.PI*2);
+                cxt2.closePath();
+                cxt2.fill();
+            }
+            setTimeout(apple,30000);
         }
         function sport(){
             var obj={};
-        //写移动的距离
-            var x, y,moveX,moveY;
-//            for(var i=snack.length-1;i>0;i--){
-//                x = snack[i-1].x - snack[i].x;
-//                y = snack[i-1].y - snack[i].y;
-//                moveX = Math.abs(x/y)>1?Math.abs(x)/x:x/Math.abs(y);
-//                moveY = Math.abs(x/y)>1?y/Math.abs(x):Math.abs(y)/y;
-//                snack[i].x += moveX;
-//                snack[i].y += moveY;
-//            }
-
             snack[0].x += sportX;
             snack[0].y += sportY;
             if(snack[0].x>width-15 || snack[0].x<15 || snack[0].y>height-15 || snack[0].y<15){
