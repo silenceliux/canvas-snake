@@ -17,7 +17,7 @@ var cxt2=c2.getContext("2d");
 var snack = [{x:width/2,y:height/2}];
 //蛇的身子的颜色
 cxt1.fillStyle="#FF0000";
-//初始化运动距离，默认向上走
+//单位时间内运动距离，默认向下走
 var sportX = 0,sportY = 1;
 //运动是时间，每次改变运动的时候要清除
 var sportTime;
@@ -27,37 +27,37 @@ var sportPath = [];
 var apples = [];
 //分数
 var score = 0;
+//每次增加的食物个数，一开始是三倍
+var appleCount = 30;
+var appleColor = ["#aea8d3","#8e44ad","#59abe3","#34980b","#4ecdc4","#66cc99","#f5d76e"];
 //移动的时候
+var lastX,lastY;
 direction.addEventListener('touchmove', function (event) {
     var touch = event.touches[0]; //获取第一个触点
     var x = touch.clientX;
     var y = touch.clientY;
-    var left,top;
-    if(x-(height/40) < height/20 ){
-        left = height/20;
-    }
-    else if(x-(height/40) > height/10){
-        left = height/10;
-    }
-    else{
-        left = x-(height/40);
-    }
-    if(y-(height/40) < height/20 ){
-        top = height/20;
-    }
-    else if(y-(height/40) > height/10){
-        top = height/10;
-    }
-    else{
-        top = y-(height/40);
-    }
-    direction.style.left=left+"px";
-    direction.style.top=top+"px";
+    //每次移动的值，长度为1px
     var moveX = x-height/10;
     var moveY = y - height/10;
     var moveRatio = moveX/moveY;
     sportY = Math.sqrt(1/(moveRatio*moveRatio+1))*(Math.abs(moveY)/moveY);
     sportX = Math.abs(sportY*moveRatio)*(Math.abs(moveX)/moveX);
+    //保证控制的球不超过边界
+    var left,top;
+    var h = height/10;
+    var xy = Math.abs(x/y);
+    var dis = Math.sqrt((h-x)*(h-x)+(h-y)*(h-y));
+    if(Math.abs(dis)>height/40){
+        left =height/10+ sportX*height/40;
+        top = height/10+ sportY*height/40;
+    }
+    else{
+        left = x;
+        top = y;
+    }
+    direction.style.left=left-height/40+"px";
+    direction.style.top=top-height/40+"px";
+
     clearTimeout(sportTime);
     sport();
 }, false);
@@ -70,7 +70,7 @@ direction.addEventListener('touchend', function (event) {
 function init(){
     initPath();
     render();
-    apple();
+    apple(appleCount*3);
     addSnack();
     sport();
 }
@@ -101,16 +101,13 @@ function addSnack(){
     render();
 }
 //添加食物
-function apple(){
-    cxt2.fillStyle="#00FF00";
-    var x, y,obj;
-    for(var i=0;i<100;i++){
+function apple(count){
+    var x, y;
+    for(var i= 0,con = count || appleCount;i<con;i++){
+        cxt2.fillStyle=appleColor[Math.floor(Math.random()*appleColor.length)];
         x = Math.floor(Math.random()*width);
         y = Math.floor(Math.random()*height);
-        obj = {};
-        obj.x = x;
-        obj.y = y;
-        apples.push(obj);
+        apples.push({x:x,y:y});
         cxt2.beginPath();
         cxt2.arc(x,y,10,0,Math.PI*2);
         cxt2.closePath();
